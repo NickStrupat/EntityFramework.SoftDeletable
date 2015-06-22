@@ -1,5 +1,5 @@
 ﻿namespace EntityFramework.SoftDeletable {
     public interface IUserSoftDeletable<TUserId> : ISoftDeletable {
-        TUserId DeletedById { get; }
+        TUserId DeletedById { get; set; }
     }
 }

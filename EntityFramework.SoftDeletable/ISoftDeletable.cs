@@ -3,6 +3,6 @@ using EntityFramework.Triggers;
 
 namespace EntityFramework.SoftDeletable {
     public interface ISoftDeletable : ITriggerable {
-        DateTime? Deleted { get; }
+        DateTime? Deleted { get; set; }
     }
 }
