@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure.Interception;
+using EntityFramework.Filters;
 using EntityFramework.Triggers;
 
 namespace EntityFramework.SoftDeletable.Testing {
@@ -21,6 +23,16 @@ namespace EntityFramework.SoftDeletable.Testing {
         public class Context : DbContextWithTriggers {
             public DbSet<Person> People { get; set; }
             public DbSet<SpecialPerson> SpecialPeople { get; set; }
+
+            public Context() {
+                this.EnableSoftDeletableFilter();
+            }
+
+            protected override void OnModelCreating(DbModelBuilder modelBuilder) {
+                DbInterception.Add(new FilterInterceptor());
+                modelBuilder.Conventions.AddSoftDeletableFilter();
+                base.OnModelCreating(modelBuilder);
+            }
         }
 
         static void Main(String[] args) {
