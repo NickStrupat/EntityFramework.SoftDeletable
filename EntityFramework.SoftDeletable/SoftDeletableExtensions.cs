@@ -18,12 +18,17 @@ namespace EntityFramework.SoftDeletable {
 	        return softDeletable.Deleted != null;
 	    }
 
+        public static void SoftDelete<TUserId>(this ISoftDeletable softDeletable) {
+            softDeletable.SetDeleted(isDeleted: true);
+        }
+
 	    public static void Restore(this ISoftDeletable softDeletable) {
 	        softDeletable.SetDeleted(isDeleted: false);
 	    }
 
         internal static void SetDeleted(this ISoftDeletable softDeletable, Boolean isDeleted) {
-            softDeletable.Deleted = isDeleted ? DateTime.UtcNow : (DateTime?)null;
-		}
+            softDeletable.DeletedPropertySetter(isDeleted ? DateTime.UtcNow : (DateTime?) null);
+            //softDeletable.Deleted = isDeleted ? DateTime.UtcNow : (DateTime?)null;
+        }
 	}
 }

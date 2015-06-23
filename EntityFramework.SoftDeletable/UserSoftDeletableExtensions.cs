@@ -14,12 +14,17 @@ namespace EntityFramework.SoftDeletable {
 			                                     };
         }
 
+        public static void SoftDelete<TUserId>(this IUserSoftDeletable<TUserId> userSoftDeletable) {
+            userSoftDeletable.SetDeleted(isDeleted: true);
+        }
+
         public static void Restore<TUserId>(this IUserSoftDeletable<TUserId> userSoftDeletable) {
             userSoftDeletable.SetDeleted(isDeleted: false);
         }
 
         private static void SetDeleted<TUserId>(this IUserSoftDeletable<TUserId> userSoftDeletable, Boolean isDeleted) {
-            userSoftDeletable.DeletedById = UserSoftDeletable<TUserId>.CurrentUserIdFunc(userSoftDeletable);
+            userSoftDeletable.DeletedByIdPropertySetter(UserSoftDeletable<TUserId>.CurrentUserIdFunc(userSoftDeletable));
+            //userSoftDeletable.DeletedById = UserSoftDeletable<TUserId>.CurrentUserIdFunc(userSoftDeletable);
             SoftDeletableExtensions.SetDeleted(userSoftDeletable, isDeleted);
         }
 	}
