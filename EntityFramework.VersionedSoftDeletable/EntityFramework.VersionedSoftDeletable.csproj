@@ -39,8 +39,9 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.Triggers">
-      <HintPath>..\packages\EntityFramework.Triggers.5.0.4\lib\net45\EntityFramework.Triggers.dll</HintPath>
+    <Reference Include="EntityFramework.Triggers, Version=5.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.Triggers.5.1.2-prerelease\lib\net45\EntityFramework.Triggers.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.VersionedProperties">
       <HintPath>..\packages\EntityFramework.VersionedProperties.2.4.3\lib\net40\EntityFramework.VersionedProperties.dll</HintPath>

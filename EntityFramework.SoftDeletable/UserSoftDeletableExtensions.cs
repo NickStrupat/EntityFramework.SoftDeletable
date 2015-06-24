@@ -3,15 +3,15 @@ using EntityFramework.Triggers;
 
 namespace EntityFramework.SoftDeletable {
     public static class UserSoftDeletableExtensions {
-		public static void InitializeSoftDeletable<TUserId>(this IUserSoftDeletable<TUserId> userSoftDeletable) {
-			userSoftDeletable.Triggers().Deleting += e => {
-				                                     e.Entity.SetDeleted(isDeleted: true);
-				                                     e.Cancel();
-			                                     };
-			userSoftDeletable.Triggers().Updating += e => {
-				                                     if (e.Entity.IsDeleted())
-					                                     throw new SoftDeletableModifiedWhileDeletedException();
-			                                     };
+        public static void InitializeSoftDeletable<TUserId>(this IUserSoftDeletable<TUserId> userSoftDeletable) {
+            userSoftDeletable.Triggers().Deleting += e => {
+                                                         e.Entity.SetDeleted(isDeleted: true);
+                                                         e.Cancel();
+                                                     };
+            userSoftDeletable.Triggers().Updating += e => {
+                                                         if (e.Entity.IsDeleted())
+                                                             throw new SoftDeletableModifiedWhileDeletedException();
+                                                     };
         }
 
         public static void SoftDelete<TUserId>(this IUserSoftDeletable<TUserId> userSoftDeletable) {
@@ -27,5 +27,5 @@ namespace EntityFramework.SoftDeletable {
             //userSoftDeletable.DeletedById = UserSoftDeletable<TUserId>.CurrentUserIdFunc(userSoftDeletable);
             SoftDeletableExtensions.SetDeleted(userSoftDeletable, isDeleted);
         }
-	}
+    }
 }

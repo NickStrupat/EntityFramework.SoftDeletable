@@ -5,7 +5,7 @@ namespace EntityFramework.SoftDeletable {
 	public abstract class SoftDeletable : ISoftDeletable {
         public DateTime? Deleted { get; set; }
 
-        public Action<DateTime?> DeletedPropertySetter { get { return x => Deleted = x; } set { throw new NotImplementedException(); } }
+        public Action<DateTime?> DeletedPropertySetter { get { return x => Deleted = x; } }
 
 	    protected SoftDeletable() {
 			this.InitializeSoftDeletable();

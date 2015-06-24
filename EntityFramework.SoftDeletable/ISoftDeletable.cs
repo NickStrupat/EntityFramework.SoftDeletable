@@ -5,6 +5,6 @@ namespace EntityFramework.SoftDeletable {
     public interface ISoftDeletable : ITriggerable {
         DateTime? Deleted { get; }
 
-        Action<DateTime?> DeletedPropertySetter { get; set; }
+        Action<DateTime?> DeletedPropertySetter { get; }
     }
 }

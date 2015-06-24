@@ -2,33 +2,33 @@ using System;
 using EntityFramework.Triggers;
 
 namespace EntityFramework.SoftDeletable {
-	public static class SoftDeletableExtensions {
+    public static class SoftDeletableExtensions {
         public static void InitializeSoftDeletable(this ISoftDeletable softDeletable) {
-			softDeletable.Triggers().Deleting += e => {
-				                                     e.Entity.SetDeleted(isDeleted: true);
-				                                     e.Cancel();
-			                                     };
-			softDeletable.Triggers().Updating += e => {
-				                                     if (e.Entity.IsDeleted())
-					                                     throw new SoftDeletableModifiedWhileDeletedException();
-			                                     };
-		}
+            softDeletable.Triggers().Deleting += e => {
+                                                     e.Entity.SetDeleted(isDeleted: true);
+                                                     e.Cancel();
+                                                 };
+            softDeletable.Triggers().Updating += e => {
+                                                     if (e.Entity.IsDeleted())
+                                                         throw new SoftDeletableModifiedWhileDeletedException();
+                                                 };
+        }
 
-	    public static Boolean IsDeleted(this ISoftDeletable softDeletable) {
-	        return softDeletable.Deleted != null;
-	    }
+        public static Boolean IsDeleted(this ISoftDeletable softDeletable) {
+            return softDeletable.Deleted != null;
+        }
 
-        public static void SoftDelete<TUserId>(this ISoftDeletable softDeletable) {
+        public static void SoftDelete(this ISoftDeletable softDeletable) {
             softDeletable.SetDeleted(isDeleted: true);
         }
 
-	    public static void Restore(this ISoftDeletable softDeletable) {
-	        softDeletable.SetDeleted(isDeleted: false);
-	    }
+        public static void Restore(this ISoftDeletable softDeletable) {
+            softDeletable.SetDeleted(isDeleted: false);
+        }
 
         internal static void SetDeleted(this ISoftDeletable softDeletable, Boolean isDeleted) {
             softDeletable.DeletedPropertySetter(isDeleted ? DateTime.UtcNow : (DateTime?) null);
             //softDeletable.Deleted = isDeleted ? DateTime.UtcNow : (DateTime?)null;
         }
-	}
+    }
 }
