@@ -58,6 +58,7 @@
     <Compile Include="ISoftDeletable.cs" />
     <Compile Include="IUserSoftDeletable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyReflection.cs" />
     <Compile Include="SoftDeletable.cs" />
     <Compile Include="SoftDeletableExtensions.cs" />
     <Compile Include="SoftDeletableModifiedWhileDeletedException.cs" />

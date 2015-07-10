@@ -15,8 +15,8 @@ namespace EntityFramework.SoftDeletable.Testing {
             public Int64 Id { get; protected set; }
             public String Name { get; set; }
 
-            static SpecialPerson() {
-                CurrentUserIdFunc = x => 42;
+            public SpecialPerson() {
+                CurrentUserIdFunc = () => 42;
             }
         }
 

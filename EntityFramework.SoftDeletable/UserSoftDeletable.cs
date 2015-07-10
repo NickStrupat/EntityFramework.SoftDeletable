@@ -3,15 +3,12 @@
 namespace EntityFramework.SoftDeletable {
     public abstract class UserSoftDeletable<TUserId> : IUserSoftDeletable<TUserId> {
         public DateTime? Deleted { get; private set; }
-        public TUserId DeletedById { get; set; }
+        public TUserId DeletedById { get; private set; }
 
-        public Action<DateTime?> DeletedPropertySetter { get { return x => Deleted = x; } }
-        public Action<TUserId> DeletedByIdPropertySetter { get { return x => DeletedById = x; } }
+        public Func<TUserId> CurrentUserIdFunc { get; set; }
 
         protected UserSoftDeletable() {
-            this.InitializeSoftDeletable();
+            this.InitializeUserSoftDeletable<UserSoftDeletable<TUserId>, TUserId>();
         }
-        
-        public static Func<IUserSoftDeletable<TUserId>, TUserId> CurrentUserIdFunc { internal get; set; }
     }
 }
