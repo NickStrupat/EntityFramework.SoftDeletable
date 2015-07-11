@@ -11,8 +11,7 @@ namespace EntityFramework.SoftDeletable {
             where TUserSoftDeletable : class, IUserSoftDeletable<TUserId>
         {
             userSoftDeletable.InitializeSoftDeletableUpdating();
-            userSoftDeletable.Triggers().Deleting += e =>
-            {
+            userSoftDeletable.Triggers().Deleting += e => {
                 e.Entity.SetUserDeleted<TUserSoftDeletable, TUserId>(isDeleted: true);
                 e.Cancel();
             };

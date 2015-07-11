@@ -14,17 +14,13 @@ namespace EntityFramework.SoftDeletable {
         public static void InitializeSoftDeletable<TSoftDeletable>(this TSoftDeletable softDeletable)
             where TSoftDeletable : class, ISoftDeletable {
             softDeletable.Triggers().Deleting += e => {
-                                                     e.Entity.SetDeleted(isDeleted: true);
-                                                     e.Cancel();
-                                                 };
-            softDeletable.Triggers().Updating += e => {
-                                                     if (e.Entity.IsDeleted())
-                                                         throw new SoftDeletableModifiedWhileDeletedException();
-                                                 };
+                e.Entity.SetDeleted(isDeleted: true);
+                e.Cancel();
+            };
+            softDeletable.InitializeSoftDeletableUpdating();
         }
 
-        internal static void InitializeSoftDeletableUpdating(this ISoftDeletable softDeletable)
-        {
+        internal static void InitializeSoftDeletableUpdating(this ISoftDeletable softDeletable) {
             softDeletable.Triggers().Updating += e => {
                 if (e.Entity.IsDeleted())
                     throw new SoftDeletableModifiedWhileDeletedException();

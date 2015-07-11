@@ -2,8 +2,8 @@
 
 namespace EntityFramework.SoftDeletable {
     public abstract class UserSoftDeletable<TUserId> : IUserSoftDeletable<TUserId> {
-        public DateTime? Deleted { get; private set; }
-        public TUserId DeletedById { get; private set; }
+        public DateTime? Deleted { get; internal set; }
+        public TUserId DeletedById { get; internal set; }
 
         public Func<TUserId> CurrentUserIdFunc { get; set; }
 
