@@ -2,7 +2,7 @@
 	public interface IUserSoftDeletable : ISoftDeletable { }
 
     public interface IUserSoftDeletable<TUserId> : IUserSoftDeletable {
-	    TUserId DeletedById { get; }
+	    TUserId DeletedChangedById { get; }
 	    TUserId GetCurrentUserId();
     }
 }
