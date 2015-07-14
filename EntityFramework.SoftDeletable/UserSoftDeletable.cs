@@ -8,7 +8,7 @@ namespace EntityFramework.SoftDeletable {
 		public abstract TUserId GetCurrentUserId();
 
 		protected UserSoftDeletable() {
-			this.InitializeUserSoftDeletable();
+			this.InitializeUserSoftDeletable<UserSoftDeletable<TUserId>, TUserId>();
 		}
 	}
 }

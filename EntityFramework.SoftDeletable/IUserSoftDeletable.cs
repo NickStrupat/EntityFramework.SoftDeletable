@@ -1,8 +1,6 @@
 ﻿namespace EntityFramework.SoftDeletable {
-	public interface IUserSoftDeletable : ISoftDeletable { }
-
-    public interface IUserSoftDeletable<TUserId> : IUserSoftDeletable {
-	    TUserId DeletedChangedById { get; }
-	    TUserId GetCurrentUserId();
+    public interface IUserSoftDeletable<TUserId> : ISoftDeletable {
+        TUserId DeletedChangedById { get; }
+        TUserId GetCurrentUserId();
     }
 }
