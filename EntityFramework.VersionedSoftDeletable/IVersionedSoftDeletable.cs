@@ -17,19 +17,21 @@ namespace EntityFramework.VersionedSoftDeletable
         TVersionedUserId Deleted { get; }
     }
 
-    internal class Wat<TUserId>
+    public class Wat<TUserId>
     {
-        internal class Bar : VersionBase<TUserId> {}
-        internal class Foo : VersionedBase<TUserId, Bar, IWooVersions> {
+        public class Bar : VersionBase<TUserId> {}
+
+        public class Foo : VersionedBase<TUserId, Bar, IWooVersions> {
             protected override Func<IWooVersions, DbSet<Bar>> VersionDbSet
             {
                 get { return x => x.WatVersions; }
             }
         }
-        internal interface IWooVersions { DbSet<Bar> WatVersions { get; set; } }
+        public interface IWooVersions { DbSet<Bar> WatVersions { get; set; } }
     }
 
     public abstract class VersionedUserSoftDeletable<TUserId> : IVersionedUserSoftDeletable<Wat<TUserId>.Foo, TUserId, Wat<TUserId>.Bar, Wat<TUserId>.IWooVersions>
     {
+        public Wat<TUserId>.Foo Deleted { get; private set; }
     }
 }
