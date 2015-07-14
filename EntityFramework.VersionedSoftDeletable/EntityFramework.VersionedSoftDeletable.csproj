@@ -56,12 +56,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="VersionedSoftDeletable.cs" />
+    <Compile Include="VersionedSoftDeletableExtensions.cs" />
+    <Compile Include="IVersionedSoftDeletable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EntityFramework.SoftDeletable\EntityFramework.SoftDeletable.csproj">
+      <Project>{9f94389d-4f98-4171-b289-c2459a7b29dd}</Project>
+      <Name>EntityFramework.SoftDeletable</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
