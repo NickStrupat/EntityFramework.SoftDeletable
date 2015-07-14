@@ -1,26 +1,27 @@
 using System;
-using System.Collections.Concurrent;
-using System.Linq.Expressions;
-using System.Reflection;
-
 using EntityFramework.Triggers;
 
 namespace EntityFramework.SoftDeletable {
-    public static class SoftDeletableExtensions {
-        internal class SetterCache<TSoftDeletable> where TSoftDeletable : class, ISoftDeletable {
-            public static Action<TSoftDeletable, DateTime?> DeletedPropertySetter = PropertyReflection.GetValueSetter<TSoftDeletable, DateTime?>(typeof(TSoftDeletable).GetProperty("Deleted"));
+	public static class SoftDeletableExtensions {
+		internal const String DeletedPropertyName = "Deleted";
+
+        internal static class SetterCache<TSoftDeletable> where TSoftDeletable : class, ISoftDeletable {
+			public static Action<TSoftDeletable, DateTime?> DeletedPropertySetter = PropertyReflection.GetValueSetter<TSoftDeletable, DateTime?>(typeof(TSoftDeletable).GetProperty(DeletedPropertyName));
         }
 
-        public static void InitializeSoftDeletable<TSoftDeletable>(this TSoftDeletable softDeletable)
-            where TSoftDeletable : class, ISoftDeletable {
-            softDeletable.Triggers().Deleting += e => {
-                e.Entity.SetDeleted(isDeleted: true);
-                e.Cancel();
-            };
+        public static void InitializeSoftDeletable(this ISoftDeletable softDeletable) {
+            softDeletable.InitializeSoftDeletableDeleting();
             softDeletable.InitializeSoftDeletableUpdating();
         }
 
-        internal static void InitializeSoftDeletableUpdating(this ISoftDeletable softDeletable) {
+		internal static void InitializeSoftDeletableDeleting(this ISoftDeletable softDeletable) {
+			softDeletable.Triggers().Deleting += e => {
+				e.Entity.SetDeleted(isDeleted: true);
+				e.Cancel();
+			};
+		}
+
+		private static void InitializeSoftDeletableUpdating(this ISoftDeletable softDeletable) {
             softDeletable.Triggers().Updating += e => {
                 if (e.Entity.IsDeleted())
                     throw new SoftDeletableModifiedWhileDeletedException();
@@ -41,7 +42,6 @@ namespace EntityFramework.SoftDeletable {
 
         internal static void SetDeleted<TSoftDeletable>(this TSoftDeletable softDeletable, Boolean isDeleted) where TSoftDeletable : class, ISoftDeletable {
             SetterCache<TSoftDeletable>.DeletedPropertySetter(softDeletable, isDeleted ? DateTime.UtcNow : (DateTime?) null);
-            //softDeletable.Deleted = isDeleted ? DateTime.UtcNow : (DateTime?)null;
         }
     }
 }

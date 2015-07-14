@@ -1,9 +1,8 @@
-﻿using System;
+﻿namespace EntityFramework.SoftDeletable {
+	public interface IUserSoftDeletable : ISoftDeletable { }
 
-namespace EntityFramework.SoftDeletable {
-    public interface IUserSoftDeletable<TUserId> : ISoftDeletable {
-        TUserId DeletedById { get; }
-        
-        Func<TUserId> CurrentUserIdFunc { get; set; }
+    public interface IUserSoftDeletable<TUserId> : IUserSoftDeletable {
+	    TUserId DeletedById { get; }
+	    TUserId GetCurrentUserId();
     }
 }

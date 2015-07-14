@@ -3,39 +3,25 @@ using EntityFramework.Triggers;
 
 namespace EntityFramework.SoftDeletable {
     public static class UserSoftDeletableExtensions {
-        internal class SetterCache<TUserSoftDeletable, TUserId> where TUserSoftDeletable : class, IUserSoftDeletable<TUserId> {
-            public static Action<TUserSoftDeletable, TUserId> DeletedPropertySetter = PropertyReflection.GetValueSetter<TUserSoftDeletable, TUserId>(typeof(TUserSoftDeletable).GetProperty("DeletedById"));
-        }
+	    private const String DeletedByIdPropertyName = "DeletedById";
 
-        public static void InitializeUserSoftDeletable<TUserSoftDeletable, TUserId>(this TUserSoftDeletable userSoftDeletable)
-            where TUserSoftDeletable : class, IUserSoftDeletable<TUserId>
-        {
-            userSoftDeletable.InitializeSoftDeletableUpdating();
-            userSoftDeletable.Triggers().Deleting += e => {
-                e.Entity.SetUserDeleted<TUserSoftDeletable, TUserId>(isDeleted: true);
-                e.Cancel();
+		internal static class SetterCache<TUserId> {
+			public static Action<IUserSoftDeletable<TUserId>, TUserId> DeletedByIdPropertySetter = PropertyReflection.GetValueSetter<IUserSoftDeletable<TUserId>, TUserId>(typeof(IUserSoftDeletable<TUserId>).GetProperty(DeletedByIdPropertyName));
+		}
+
+        public static void InitializeUserSoftDeletable<TUserId>(this IUserSoftDeletable<TUserId> userSoftDeletable) {
+			userSoftDeletable.Triggers().Deleting += e => {
+				var originalDeletedValue = (DateTime?) e.Context.Entry(e.Entity).OriginalValues[SoftDeletableExtensions.DeletedPropertyName];
+				e.Entity.SetDeleted(isDeleted: true);
+				if (originalDeletedValue == null)
+					SetterCache<TUserId>.DeletedByIdPropertySetter(e.Entity, e.Entity.GetCurrentUserId());
+				e.Cancel();
+			};
+            userSoftDeletable.Triggers().Updating += e => {
+				if (e.Entity.IsDeleted())
+					throw new SoftDeletableModifiedWhileDeletedException();
+
             };
-        }
-
-        public static void SoftDelete<TUserSoftDeletable, TUserId>(this TUserSoftDeletable userSoftDeletable)
-            where TUserSoftDeletable : class, IUserSoftDeletable<TUserId>
-        {
-            userSoftDeletable.SetUserDeleted<TUserSoftDeletable, TUserId>(isDeleted: true);
-        }
-
-        public static void Restore<TUserSoftDeletable, TUserId>(this TUserSoftDeletable userSoftDeletable)
-            where TUserSoftDeletable : class, IUserSoftDeletable<TUserId>
-        {
-            userSoftDeletable.SetUserDeleted<TUserSoftDeletable, TUserId>(isDeleted: false);
-        }
-
-        private static void SetUserDeleted<TUserSoftDeletable, TUserId>(this TUserSoftDeletable userSoftDeletable, Boolean isDeleted)
-            where TUserSoftDeletable : class, IUserSoftDeletable<TUserId>
-        {
-            SetterCache<TUserSoftDeletable, TUserId>.DeletedPropertySetter(userSoftDeletable, userSoftDeletable.CurrentUserIdFunc());
-            //userSoftDeletable.DeletedByIdPropertySetter(UserSoftDeletable<TUserId>.CurrentUserIdFunc(userSoftDeletable));
-            //userSoftDeletable.DeletedById = UserSoftDeletable<TUserId>.CurrentUserIdFunc(userSoftDeletable);
-            userSoftDeletable.SetDeleted(isDeleted);
         }
     }
 }

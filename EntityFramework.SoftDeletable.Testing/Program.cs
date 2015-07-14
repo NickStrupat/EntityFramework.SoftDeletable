@@ -15,9 +15,9 @@ namespace EntityFramework.SoftDeletable.Testing {
             public Int64 Id { get; protected set; }
             public String Name { get; set; }
 
-            public SpecialPerson() {
-                CurrentUserIdFunc = () => 42;
-            }
+	        public override Int64 GetCurrentUserId() {
+		        return 42;
+	        }
         }
 
         public class Context : DbContextWithTriggers {
