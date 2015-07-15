@@ -2,7 +2,7 @@
 using EntityFramework.Triggers;
 
 namespace EntityFramework.SoftDeletable {
-    public interface ISoftDeletable : ITriggerable {
-        DateTime? Deleted { get; }
-    }
+	public interface ISoftDeletable : ITriggerable {
+		DateTime? Deleted { get; }
+	}
 }
