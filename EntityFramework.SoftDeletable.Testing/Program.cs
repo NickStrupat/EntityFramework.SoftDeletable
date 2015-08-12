@@ -40,7 +40,8 @@ namespace EntityFramework.SoftDeletable.Testing {
 				var nick = new Person { Name = "Nick" };
 				context.People.Add(nick);
 				context.SaveChanges();
-				context.People.Remove(nick);
+				nick.SoftDelete();
+				//context.People.Remove(nick);
 				context.SaveChanges();
 				nick.Restore();
 				context.SaveChanges();

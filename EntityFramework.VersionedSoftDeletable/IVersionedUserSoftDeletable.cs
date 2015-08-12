@@ -11,10 +11,8 @@ namespace EntityFramework.VersionedSoftDeletable {
 
 	[ComplexType]
 	public class VersionedUserDeleted : VersionedBase<UserDeleted, UserDeletedVersion, IUserDeleteds> {
-		protected override UserDeleted DefaultValue { get { return new UserDeleted(); } }
-		protected override Func<IUserDeleteds, DbSet<UserDeletedVersion>> VersionDbSet {
-			get { return x => x.UserDeleteds; }
-		}
+		protected override UserDeleted DefaultValue => new UserDeleted();
+		protected override Func<IUserDeleteds, DbSet<UserDeletedVersion>> VersionDbSet => x => x.UserDeleteds;
 	}
 
 	[ComplexType]
@@ -27,7 +25,7 @@ namespace EntityFramework.VersionedSoftDeletable {
 
 		internal UserDeleted(String userId, Boolean isDeleted) {
 			if (userId == null)
-				throw new ArgumentNullException("userId");
+				throw new ArgumentNullException(nameof(userId));
 			UserId = userId;
 			IsDeleted = isDeleted;
 		}

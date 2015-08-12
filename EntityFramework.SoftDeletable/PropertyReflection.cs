@@ -6,10 +6,11 @@ namespace EntityFramework.SoftDeletable {
 	internal static class PropertyReflection {
 		public static Action<TType, TProperty> GetValueSetter<TType, TProperty>(PropertyInfo propertyInfo) {
 			if (propertyInfo == null)
-				throw new ArgumentNullException("propertyInfo");
+				throw new ArgumentNullException(nameof(propertyInfo));
+			propertyInfo = propertyInfo.DeclaringType.GetProperty(propertyInfo.Name);
 			var method = propertyInfo.GetSetMethod(true);
 			if (method == null)
-				throw new InvalidOperationException("Could not find setter for property. Note: setter must not be private.");
+				throw new InvalidOperationException("Property setter not found");
 			var instance = Expression.Parameter(typeof(TType));
 			var argument = Expression.Parameter(typeof(TProperty));
 			var setterCall = Expression.Call(

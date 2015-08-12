@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.SoftDeletable", "EntityFramework.SoftDeletable\EntityFramework.SoftDeletable.csproj", "{9F94389D-4F98-4171-B289-C2459A7B29DD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.VersionedSoftDeletable", "EntityFramework.VersionedSoftDeletable\EntityFramework.VersionedSoftDeletable.csproj", "{411BC2CC-23D0-4284-B1EE-6065780743C3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.SoftDeletable.Testing", "EntityFramework.SoftDeletable.Testing\EntityFramework.SoftDeletable.Testing.csproj", "{ACF5AF53-4C1C-4C26-A6A5-E8B380CC8009}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{08D8D6EC-21AD-479C-9140-41E069683D52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{ACF5AF53-4C1C-4C26-A6A5-E8B380CC8009}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACF5AF53-4C1C-4C26-A6A5-E8B380CC8009}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACF5AF53-4C1C-4C26-A6A5-E8B380CC8009}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08D8D6EC-21AD-479C-9140-41E069683D52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08D8D6EC-21AD-479C-9140-41E069683D52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08D8D6EC-21AD-479C-9140-41E069683D52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08D8D6EC-21AD-479C-9140-41E069683D52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

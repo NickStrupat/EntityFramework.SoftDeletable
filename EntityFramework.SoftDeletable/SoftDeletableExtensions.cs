@@ -3,10 +3,14 @@ using EntityFramework.Triggers;
 
 namespace EntityFramework.SoftDeletable {
 	public static class SoftDeletableExtensions {
-		internal const String DeletedPropertyName = "Deleted";
-
 		internal static class SetterCache<TSoftDeletable> where TSoftDeletable : class, ISoftDeletable {
-			public static readonly Action<TSoftDeletable, DateTime?> DeletedPropertySetter = PropertyReflection.GetValueSetter<TSoftDeletable, DateTime?>(typeof(TSoftDeletable).GetProperty(DeletedPropertyName));
+			public static readonly Action<TSoftDeletable, DateTime?> DeletedPropertySetter = PropertyReflection.GetValueSetter<TSoftDeletable, DateTime?>(
+				typeof(TSoftDeletable).GetProperty(nameof(ISoftDeletable.Deleted))
+			);
+		}
+
+		internal static DateTime? GetOriginalDeletedValue(this IBeforeEntry<ISoftDeletable> entry) {
+			return (DateTime?)entry.Context.Entry(entry.Entity).OriginalValues[nameof(ISoftDeletable.Deleted)];
 		}
 
 		public static void InitializeSoftDeletable<TSoftDeletable>(this TSoftDeletable softDeletable) where TSoftDeletable : class, ISoftDeletable {
@@ -15,7 +19,7 @@ namespace EntityFramework.SoftDeletable {
 				e.Cancel();
 			};
 			softDeletable.Triggers().Updating += e => {
-				if (e.Entity.IsDeleted())
+				if (e.GetOriginalDeletedValue() != null && e.Entity.IsDeleted())
 					throw new SoftDeletableModifiedWhileDeletedException();
 			};
 		}

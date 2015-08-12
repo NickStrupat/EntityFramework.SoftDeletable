@@ -7,22 +7,14 @@ namespace EntityFramework.VersionedSoftDeletable {
 	public static class DbContextExtensions {
 		private const String VersionedSoftDeletableFilterName = "VersionedSoftDeletable";
 
-		public static void EnableSoftDeletableFilter(this DbContext dbContext) {
-			dbContext.EnableFilter(VersionedSoftDeletableFilterName);
-		}
-
-		public static void DisableSoftDeletableFilter(this DbContext dbContext) {
-			dbContext.DisableFilter(VersionedSoftDeletableFilterName);
-		}
-
-		public static void AddSoftDeletableFilter(this ConventionsConfiguration conventions) {
-			conventions.Add(FilterConvention.Create(VersionedSoftDeletableFilterName, VersionedSoftDeletable.IsNotDeletedExpression));
-		}
+		public static void AddSoftDeletableFilter(this ConventionsConfiguration conventions) => conventions.Add(FilterConvention.Create(VersionedSoftDeletableFilterName, VersionedSoftDeletable.IsNotDeletedExpression));
+		public static void EnableSoftDeletableFilter(this DbContext dbContext) => dbContext.EnableFilter(VersionedSoftDeletableFilterName);
+		public static void DisableSoftDeletableFilter(this DbContext dbContext) => dbContext.DisableFilter(VersionedSoftDeletableFilterName);
 
 		private static void CheckVersionedSoftDeletableType<TVersionedSoftDeletable>() {
 			var type = typeof(TVersionedSoftDeletable);
 			if (!typeof(IVersionedSoftDeletable).IsAssignableFrom(type) || !typeof(IVersionedUserSoftDeletable).IsAssignableFrom(type))
-				throw new InvalidOperationException(String.Format("TVersionedSoftDeletable must implement {0} or {1}", typeof(IVersionedSoftDeletable).Name, typeof(IVersionedUserSoftDeletable).Name));
+				throw new InvalidOperationException($"TVersionedSoftDeletable must implement {typeof (IVersionedSoftDeletable).Name} or {typeof (IVersionedUserSoftDeletable).Name}");
 		}
 
 		public static void EnableVersionedSoftDeletableFilter<TVersionedSoftDeletable>(this DbContext dbContext) {

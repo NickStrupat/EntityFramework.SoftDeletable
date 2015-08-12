@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace EntityFramework.SoftDeletable {
 	public abstract class SoftDeletable : ISoftDeletable {
-		public DateTime? Deleted { get; internal set; }
+		public DateTime? Deleted { get; private set; }
 
 		protected SoftDeletable() {
 			this.InitializeSoftDeletable();
