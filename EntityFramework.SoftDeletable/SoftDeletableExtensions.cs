@@ -19,7 +19,7 @@ namespace EntityFramework.SoftDeletable {
 				e.Cancel();
 			};
 			softDeletable.Triggers().Updating += e => {
-				if (e.GetOriginalDeletedValue() != null && e.Entity.IsDeleted())
+				if (e.Entity.IsDeleted() && e.GetOriginalDeletedValue() != null)
 					throw new SoftDeletableModifiedWhileDeletedException();
 			};
 		}
