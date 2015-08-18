@@ -37,14 +37,14 @@ namespace EntityFramework.SoftDeletable.Testing {
 
 		static void Main(String[] args) {
 			using (var context = new Context()) {
-				var nick = new Person { Name = "Nick" };
-				context.People.Add(nick);
-				context.SaveChanges();
-				nick.SoftDelete();
-				//context.People.Remove(nick);
-				context.SaveChanges();
-				nick.Restore();
-				context.SaveChanges();
+				//var nick = new Person { Name = "Nick" };
+				//context.People.Add(nick);
+				//context.SaveChanges();
+				//nick.SoftDelete();
+				////context.People.Remove(nick);
+				//context.SaveChanges();
+				//nick.Restore();
+				//context.SaveChanges();
 
 				var ferenc = new SpecialPerson { Name = "Ferenc" };
 				context.SpecialPeople.Add(ferenc);

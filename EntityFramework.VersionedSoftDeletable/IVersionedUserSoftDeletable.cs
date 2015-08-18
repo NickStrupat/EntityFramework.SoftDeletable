@@ -4,10 +4,25 @@ using System.Data.Entity;
 using EntityFramework.VersionedProperties;
 
 namespace EntityFramework.VersionedSoftDeletable {
-	public interface IVersionedUserSoftDeletable : IVersionedProperties {
-		VersionedUserDeleted Deleted { get; }
-		String GetCurrentUserId();
+	public interface IVersionedUserSoftDeletable<TUserId, TVersionedUserDeleted> : IVersionedProperties {
+		TVersionedUserDeleted Deleted { get; }
+		TUserId GetCurrentUserId();
 	}
+
+	public abstract class UserDeleted<TUserId> {
+		public TUserId UserId { get; private set; } // We're unable to apply a foreign constraint here due to current limitations of complex types in Entity Framework 6
+		public Boolean IsDeleted { get; private set; }
+
+		protected UserDeleted() {}
+		protected UserDeleted(TUserId userId, Boolean isDeleted) {
+			if (userId == null)
+				throw new ArgumentNullException(nameof(userId));
+			UserId = userId;
+			IsDeleted = isDeleted;
+		}
+	}
+
+	public interface IVersionedUserSoftDeletable : IVersionedUserSoftDeletable<String, VersionedUserDeleted> {}
 
 	[ComplexType]
 	public class VersionedUserDeleted : VersionedBase<UserDeleted, UserDeletedVersion, IUserDeleteds> {
@@ -16,19 +31,9 @@ namespace EntityFramework.VersionedSoftDeletable {
 	}
 
 	[ComplexType]
-	public class UserDeleted {
-		public String UserId { get; protected set; } // We're unable to apply a foreign constraint here due to current limitations of complex types in Entity Framework 6
-
-		public Boolean IsDeleted { get; protected set; }
-
-		internal UserDeleted() { }
-
-		internal UserDeleted(String userId, Boolean isDeleted) {
-			if (userId == null)
-				throw new ArgumentNullException(nameof(userId));
-			UserId = userId;
-			IsDeleted = isDeleted;
-		}
+	public class UserDeleted : UserDeleted<String> {
+		internal UserDeleted() {}
+		internal UserDeleted(String userId, Boolean isDeleted) : base(userId, isDeleted) {}
 	}
 
 	public class UserDeletedVersion : VersionBase<UserDeleted> { }
