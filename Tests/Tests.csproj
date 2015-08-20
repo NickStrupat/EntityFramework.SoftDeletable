@@ -39,6 +39,10 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="EntityFramework.Extended, Version=6.0.0.0, Culture=neutral, PublicKeyToken=05b7e29bdd433584, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.Extended.6.1.0.168\lib\net45\EntityFramework.Extended.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework.Filters, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.Filters.0.3.0.0\lib\net40\EntityFramework.Filters.dll</HintPath>
       <Private>True</Private>
@@ -49,6 +53,10 @@
     </Reference>
     <Reference Include="EntityFramework.Triggers, Version=5.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.Triggers.5.2.1\lib\net45\EntityFramework.Triggers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.VersionedProperties, Version=2.5.2.41397, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.VersionedProperties.2.5.2-prerelease\lib\net40\EntityFramework.VersionedProperties.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -71,6 +79,7 @@
     <Compile Include="SoftDeletableTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserSoftDeletableTests.cs" />
+    <Compile Include="VersionedSoftDeletableTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -80,6 +89,10 @@
     <ProjectReference Include="..\EntityFramework.SoftDeletable\EntityFramework.SoftDeletable.csproj">
       <Project>{9F94389D-4F98-4171-B289-C2459A7B29DD}</Project>
       <Name>EntityFramework.SoftDeletable</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EntityFramework.VersionedSoftDeletable\EntityFramework.VersionedSoftDeletable.csproj">
+      <Project>{411BC2CC-23D0-4284-B1EE-6065780743C3}</Project>
+      <Name>EntityFramework.VersionedSoftDeletable</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

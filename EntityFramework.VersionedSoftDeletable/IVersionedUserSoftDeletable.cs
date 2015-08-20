@@ -36,7 +36,7 @@ namespace EntityFramework.VersionedSoftDeletable {
 		internal UserDeleted(String userId, Boolean isDeleted) : base(userId, isDeleted) {}
 	}
 
-	public class UserDeletedVersion : VersionBase<UserDeleted> { }
+	public class UserDeletedVersion : VersionBase<UserDeleted> {}
 
 	public interface IUserDeleteds {
 		DbSet<UserDeletedVersion> UserDeleteds { get; set; }

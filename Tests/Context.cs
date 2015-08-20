@@ -4,21 +4,27 @@ using System.Data.Entity.Infrastructure.Interception;
 using EntityFramework.Filters;
 using EntityFramework.SoftDeletable;
 using EntityFramework.Triggers;
+using EntityFramework.VersionedProperties;
+using EntityFramework.VersionedSoftDeletable;
+using DbContextExtensions = EntityFramework.SoftDeletable.DbContextExtensions;
 
 namespace Tests {
-	public class Context : DbContextWithTriggers {
+	public class Context : DbContextWithTriggers, IBooleanVersions {
 		public DbSet<Person> People { get; set; }
 		public DbSet<SpecialPerson> SpecialPeople { get; set; }
+		public DbSet<VPerson> VPeople { get; set; }
 
 		public Context() {
-			this.EnableSoftDeletableFilter();
+			DbContextExtensions.EnableSoftDeletableFilter(this);
 		}
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder) {
 			DbInterception.Add(new FilterInterceptor());
-			modelBuilder.Conventions.AddSoftDeletableFilter();
+			DbContextExtensions.AddSoftDeletableFilter(modelBuilder.Conventions);
 			base.OnModelCreating(modelBuilder);
 		}
+
+		public DbSet<BooleanVersion> BooleanVersions { get; set; }
 	}
 
 	public class Person : SoftDeletable {
@@ -38,5 +44,10 @@ namespace Tests {
 		public SpecialPerson(Func<Int64> getUserIdFunc) {
 			CurrentUserIdFunc = getUserIdFunc;
 		}
+	}
+
+	public class VPerson : VersionedSoftDeletable {
+		public Int64 Id { get; private set; }
+		public String Name { get; set; }
 	}
 }

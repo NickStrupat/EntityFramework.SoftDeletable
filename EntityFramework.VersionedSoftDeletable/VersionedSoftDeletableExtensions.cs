@@ -6,8 +6,9 @@ namespace EntityFramework.VersionedSoftDeletable {
 	public static class VersionedSoftDeletableExtensions {
 		public static void InitializeVersionedSoftDeletable(this IVersionedSoftDeletable versionedSoftDeletable) {
 			versionedSoftDeletable.InitializeVersionedProperties();
+			versionedSoftDeletable.Restore();
 			versionedSoftDeletable.Triggers().Deleting += e => {
-				e.Entity.SetDeleted(isDeleted: true);
+				e.Entity.SoftDelete();
 				e.Cancel();
 			};
 			versionedSoftDeletable.Triggers().Updating += e => {
@@ -17,19 +18,23 @@ namespace EntityFramework.VersionedSoftDeletable {
 		}
 
 		public static Boolean IsDeleted(this IVersionedSoftDeletable versionedSoftDeletable) {
+			if (versionedSoftDeletable == null)
+				throw new ArgumentNullException(nameof(versionedSoftDeletable));
 			return versionedSoftDeletable.Deleted.Value;
 		}
 
 		public static void SoftDelete(this IVersionedSoftDeletable versionedSoftDeletable) {
-			versionedSoftDeletable.SetDeleted(isDeleted: true);
+			if (versionedSoftDeletable == null)
+				throw new ArgumentNullException(nameof(versionedSoftDeletable));
+			versionedSoftDeletable.SetDeleted(newDeletedState: true);
 		}
 
 		public static void Restore(this IVersionedSoftDeletable versionedSoftDeletable) {
-			versionedSoftDeletable.SetDeleted(isDeleted: false);
+			if (versionedSoftDeletable == null)
+				throw new ArgumentNullException(nameof(versionedSoftDeletable));
+			versionedSoftDeletable.SetDeleted(newDeletedState: false);
 		}
 
-		internal static void SetDeleted(this IVersionedSoftDeletable versionedSoftDeletable, Boolean isDeleted) {
-			versionedSoftDeletable.Deleted.Value = isDeleted;
-		}
+		private static void SetDeleted(this IVersionedSoftDeletable versionedSoftDeletable, Boolean newDeletedState) => versionedSoftDeletable.Deleted.Value = newDeletedState;
 	}
 }

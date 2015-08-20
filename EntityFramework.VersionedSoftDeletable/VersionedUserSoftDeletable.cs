@@ -8,4 +8,9 @@ namespace EntityFramework.VersionedSoftDeletable {
 
 		internal static Expression<Func<IVersionedUserSoftDeletable, Boolean>> IsNotDeletedExpression = x => !x.Deleted.Value.IsDeleted;
 	}
+
+	public abstract class VersionedUserSoftDeletable<TUserId, TVersionedUserDeleted> : IVersionedUserSoftDeletable<TUserId, TVersionedUserDeleted> {
+		public TVersionedUserDeleted Deleted { get; internal set; }
+		public abstract TUserId GetCurrentUserId();
+	}
 }
