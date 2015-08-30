@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="DbContextExtensions.cs" />
     <Compile Include="IVersionedUserSoftDeletable.cs" />
+    <Compile Include="LateBoundMethods.cs" />
     <Compile Include="VersionedSoftDeletable.cs" />
     <Compile Include="VersionedSoftDeletableExtensions.cs" />
     <Compile Include="IVersionedSoftDeletable.cs" />

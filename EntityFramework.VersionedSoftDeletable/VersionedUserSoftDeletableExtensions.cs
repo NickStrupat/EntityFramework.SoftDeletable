@@ -4,7 +4,7 @@ using EntityFramework.VersionedProperties;
 
 namespace EntityFramework.VersionedSoftDeletable {
 	public static class VersionedUserSoftDeletableExtensions {
-		public static void InitializeVersionedUserSoftDeletable(this IVersionedUserSoftDeletable versionedUserSoftDeletable) {
+		public static void InitializeVersionedUserSoftDeletable<TUserId, TVersionedUserDeleted>(this IVersionedUserSoftDeletable<TUserId, TVersionedUserDeleted> versionedUserSoftDeletable) {
 			versionedUserSoftDeletable.InitializeVersionedProperties();
 			versionedUserSoftDeletable.Triggers().Deleting += e => {
 				e.Entity.SoftDelete();
@@ -16,24 +16,26 @@ namespace EntityFramework.VersionedSoftDeletable {
 			};
 		}
 
-		public static Boolean IsDeleted(this IVersionedUserSoftDeletable versionedUserSoftDeletable) {
+		public static Boolean IsDeleted<TUserId, TVersionedUserDeleted>(this IVersionedUserSoftDeletable<TUserId, TVersionedUserDeleted> versionedUserSoftDeletable) {
 			if (versionedUserSoftDeletable == null)
 				throw new ArgumentNullException(nameof(versionedUserSoftDeletable));
-			return versionedUserSoftDeletable.Deleted.Value.IsDeleted;
+			return LateBoundMethods<IVersionedUserSoftDeletable<TUserId, TVersionedUserDeleted>>.IsDeleted(versionedUserSoftDeletable);
 		}
 
-		public static void SoftDelete(this IVersionedUserSoftDeletable versionedUserSoftDeletable) {
+		public static void SoftDelete<TUserId, TVersionedUserDeleted>(this IVersionedUserSoftDeletable<TUserId, TVersionedUserDeleted> versionedUserSoftDeletable) {
 			if (versionedUserSoftDeletable == null)
 				throw new ArgumentNullException(nameof(versionedUserSoftDeletable));
 			versionedUserSoftDeletable.SetDeleted(newDeletedState: true);
 		}
 
-		public static void Restore(this IVersionedUserSoftDeletable versionedUserSoftDeletable) {
+		public static void Restore<TUserId, TVersionedUserDeleted>(this IVersionedUserSoftDeletable<TUserId, TVersionedUserDeleted> versionedUserSoftDeletable) {
 			if (versionedUserSoftDeletable == null)
 				throw new ArgumentNullException(nameof(versionedUserSoftDeletable));
 			versionedUserSoftDeletable.SetDeleted(newDeletedState: false);
 		}
 
-		private static void SetDeleted(this IVersionedUserSoftDeletable versionedUserSoftDeletable, Boolean newDeletedState) => versionedUserSoftDeletable.Deleted.Value = new UserDeleted(versionedUserSoftDeletable.GetCurrentUserId(), newDeletedState);
+		private static void SetDeleted<TUserId, TVersionedUserDeleted>(this IVersionedUserSoftDeletable<TUserId, TVersionedUserDeleted> versionedUserSoftDeletable, Boolean newDeletedState) {
+			LateBoundMethods<IVersionedUserSoftDeletable<TUserId, TVersionedUserDeleted>>.SetDeleted(versionedUserSoftDeletable, newDeletedState);
+		}
 	}
 }

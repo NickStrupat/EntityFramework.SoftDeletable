@@ -1,35 +1,34 @@
-using System;
-using System.Linq;
-using EntityFramework.SoftDeletable;
+﻿using System;
+using EntityFramework.VersionedSoftDeletable;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests {
 	[TestClass]
-	public class UserSoftDeletableTests {
+	public class VersionedUserSoftDeletableTests {
 		[TestMethod]
 		public void ExplicitSoftDelete() {
 			using (var context = new Context()) {
 				var userIdGetterCount = 0;
-				Func<Int64> getUserIdFunc = () => ++userIdGetterCount;
+				Func<String> getUserIdFunc = () => (++userIdGetterCount).ToString();
 
-				var nick = new SpecialPerson { Name = "Nick", CurrentUserIdFunc = getUserIdFunc };
-				context.SpecialPeople.Add(nick);
-				Assert.IsNull(nick.Deleted);
+				var nick = new VuPerson { Name = "Nick", CurrentUserIdFunc = getUserIdFunc };
+				context.VuPeople.Add(nick);
+				Assert.IsFalse(nick.Deleted.Value.IsDeleted);
 				Assert.IsFalse(nick.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 0);
 
 				nick.SoftDelete();
-				Assert.IsNotNull(nick.Deleted);
+				Assert.IsTrue(nick.Deleted.Value.IsDeleted);
 				Assert.IsTrue(nick.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 1);
 
 				nick.Restore();
-				Assert.IsNull(nick.Deleted);
+				Assert.IsFalse(nick.Deleted.Value.IsDeleted);
 				Assert.IsFalse(nick.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 2);
 
 				context.SaveChanges();
-				Assert.IsNull(nick.Deleted);
+				Assert.IsFalse(nick.Deleted.Value.IsDeleted);
 				Assert.IsFalse(nick.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 2);
 			}
@@ -39,32 +38,32 @@ namespace Tests {
 		public void ImplicitSoftDelete() {
 			using (var context = new Context()) {
 				var userIdGetterCount = 0;
-				Func<Int64> getUserIdFunc = () => ++userIdGetterCount;
+				Func<String> getUserIdFunc = () => (++userIdGetterCount).ToString();
 
-				var ned = new SpecialPerson { Name = "Ned", CurrentUserIdFunc = getUserIdFunc };
-				context.SpecialPeople.Add(ned);
-				Assert.IsNull(ned.Deleted);
+				var ned = new VuPerson { Name = "Ned", CurrentUserIdFunc = getUserIdFunc };
+				context.VuPeople.Add(ned);
+				Assert.IsFalse(ned.Deleted.Value.IsDeleted);
 				Assert.IsFalse(ned.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 0);
 
 				context.SaveChanges();
-				Assert.IsNull(ned.Deleted);
+				Assert.IsFalse(ned.Deleted.Value.IsDeleted);
 				Assert.IsFalse(ned.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 0);
 
-				context.SpecialPeople.Remove(ned);
-				Assert.IsNull(ned.Deleted);
+				context.VuPeople.Remove(ned);
+				Assert.IsFalse(ned.Deleted.Value.IsDeleted);
 				Assert.IsFalse(ned.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 0);
 
 				context.SaveChanges();
-				Assert.IsNotNull(ned.Deleted);
+				Assert.IsTrue(ned.Deleted.Value.IsDeleted);
 				Assert.IsTrue(ned.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 1);
 
 				ned.Restore();
 				context.SaveChanges();
-				Assert.IsNull(ned.Deleted);
+				Assert.IsFalse(ned.Deleted.Value.IsDeleted);
 				Assert.IsFalse(ned.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 2);
 			}
