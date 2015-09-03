@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
-using EntityFramework.VersionedProperties;
+﻿using EntityFramework.VersionedProperties;
 
 namespace EntityFramework.VersionedSoftDeletable {
 	public abstract class VersionedSoftDeletable : IVersionedSoftDeletable {
@@ -9,7 +7,5 @@ namespace EntityFramework.VersionedSoftDeletable {
 		protected VersionedSoftDeletable() {
 			this.InitializeVersionedSoftDeletable();
 		}
-
-		internal static Expression<Func<IVersionedSoftDeletable, Boolean>> IsNotDeletedExpression = x => !x.Deleted.Value;
 	}
 }

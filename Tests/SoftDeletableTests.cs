@@ -1,4 +1,7 @@
-﻿using EntityFramework.SoftDeletable;
+﻿using System;
+using System.Linq;
+using EntityFramework.Extensions;
+using EntityFramework.SoftDeletable;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Tests {
@@ -45,6 +48,26 @@ namespace Tests {
 				context.SaveChanges();
 				Assert.IsNotNull(ned.Deleted);
 				Assert.IsTrue(ned.IsDeleted());
+			}
+		}
+
+		[TestMethod]
+		public void Filter() {
+			using (var context = new Context()) {
+				var nick = new Person { Name = "Nick" };
+				context.People.Add(nick);
+				nick.SoftDelete();
+				context.SaveChanges();
+                var a = context.People.SingleOrDefault(x => x.Id == nick.Id);
+				Assert.IsNull(a);
+
+				context.DisableSoftDeletableFilter();
+				var b = context.People.SingleOrDefault(x => x.Id == nick.Id);
+				Assert.IsNotNull(b);
+
+				context.EnableSoftDeletableFilter();
+				var c = context.People.SingleOrDefault(x => x.Id == nick.Id);
+				Assert.IsNull(c);
 			}
 		}
 	}

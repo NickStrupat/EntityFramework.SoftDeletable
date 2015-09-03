@@ -1,14 +1,19 @@
 using System;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure.Interception;
-using EntityFramework.Filters;
+using System.Data.Entity.Migrations;
 using EntityFramework.SoftDeletable;
 using EntityFramework.Triggers;
 using EntityFramework.VersionedProperties;
 using EntityFramework.VersionedSoftDeletable;
-using DbContextExtensions = EntityFramework.SoftDeletable.DbContextExtensions;
 
 namespace Tests {
+	public class MigrationsConfiguration : DbMigrationsConfiguration<Context> {
+		public MigrationsConfiguration() {
+			AutomaticMigrationsEnabled = true;
+			AutomaticMigrationDataLossAllowed = true;
+		}
+	}
+
 	public class Context : DbContextWithTriggers, IBooleanVersions, IUserDeleteds {
 		public DbSet<Person> People { get; set; }
 		public DbSet<SpecialPerson> SpecialPeople { get; set; }
@@ -16,12 +21,12 @@ namespace Tests {
 		public DbSet<VuPerson> VuPeople { get; set; }
 
 		public Context() {
-			DbContextExtensions.EnableSoftDeletableFilter(this);
+			this.EnableSoftDeletableFilter();
+			
 		}
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder) {
-			DbInterception.Add(new FilterInterceptor());
-			DbContextExtensions.AddSoftDeletableFilter(modelBuilder.Conventions);
+			modelBuilder.AddSoftDeletableFilter();
 			base.OnModelCreating(modelBuilder);
 		}
 

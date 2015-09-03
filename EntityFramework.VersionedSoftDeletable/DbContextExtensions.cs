@@ -1,40 +1,50 @@
 ﻿using System;
 using System.Data.Entity;
-using System.Data.Entity.ModelConfiguration.Configuration;
-using EntityFramework.Filters;
+using EntityFramework.DynamicFilters;
 
 namespace EntityFramework.VersionedSoftDeletable {
 	public static class DbContextExtensions {
-		private const String VersionedSoftDeletableFilterName = "VersionedSoftDeletable";
+		#region IVersionedSoftDeletable
+		private const String versionedSoftDeletableFilterName = "VersionedSoftDeletable";
 
-		public static void AddSoftDeletableFilter(this ConventionsConfiguration conventions) => conventions.Add(FilterConvention.Create(VersionedSoftDeletableFilterName, VersionedSoftDeletable.IsNotDeletedExpression));
-		public static void EnableSoftDeletableFilter(this DbContext dbContext) => dbContext.EnableFilter(VersionedSoftDeletableFilterName);
-		public static void DisableSoftDeletableFilter(this DbContext dbContext) => dbContext.DisableFilter(VersionedSoftDeletableFilterName);
-
-		private static void CheckVersionedSoftDeletableType<TVersionedSoftDeletable>() {
-			var type = typeof(TVersionedSoftDeletable);
-			if (!typeof(IVersionedSoftDeletable).IsAssignableFrom(type) || !typeof(IVersionedUserSoftDeletable).IsAssignableFrom(type))
-				throw new InvalidOperationException($"TVersionedSoftDeletable must implement {typeof (IVersionedSoftDeletable).Name} or {typeof (IVersionedUserSoftDeletable).Name}");
+		public static void AddVersionedSoftDeletableFilter(this DbModelBuilder modelBuilder) {
+			modelBuilder.Filter(versionedSoftDeletableFilterName, FilterExpression<IVersionedSoftDeletable>.IsNotDeletedExpression);
 		}
 
-		public static void EnableVersionedSoftDeletableFilter<TVersionedSoftDeletable>(this DbContext dbContext) {
-			CheckVersionedSoftDeletableType<TVersionedSoftDeletable>();
-			dbContext.EnableFilter(VersionedSoftDeletableFilterName + typeof(TVersionedSoftDeletable).Name);
+		public static void EnableVersionedSoftDeletableFilter(this DbContext dbContext) {
+			dbContext.EnableFilter(versionedSoftDeletableFilterName);
 		}
 
-		public static void DisableVersionedSoftDeletableFilter<TVersionedSoftDeletable>(this DbContext dbContext) {
-			CheckVersionedSoftDeletableType<TVersionedSoftDeletable>();
-			dbContext.DisableFilter(VersionedSoftDeletableFilterName + typeof(TVersionedSoftDeletable).Name);
+		public static void DisableVersionedSoftDeletableFilter(this DbContext dbContext) {
+			dbContext.DisableFilter(versionedSoftDeletableFilterName);
 		}
 
-		public static void AddSoftDeletableFilter<TVersionedSoftDeletable>(this ConventionsConfiguration conventions) {
-			CheckVersionedSoftDeletableType<TVersionedSoftDeletable>();
-			if (typeof(IVersionedSoftDeletable).IsAssignableFrom(typeof(TVersionedSoftDeletable)))
-				conventions.Add(FilterConvention.Create(VersionedSoftDeletableFilterName + typeof(TVersionedSoftDeletable).Name, VersionedSoftDeletable.IsNotDeletedExpression));
-			else if (typeof(IVersionedUserSoftDeletable).IsAssignableFrom(typeof(TVersionedSoftDeletable)))
-				conventions.Add(FilterConvention.Create(VersionedSoftDeletableFilterName + typeof(TVersionedSoftDeletable).Name, VersionedUserSoftDeletable.IsNotDeletedExpression));
-			else
-				throw new InvalidOperationException("Unknown type: " + typeof(TVersionedSoftDeletable));
+		public static void AddVersionedSoftDeletableFilter<TVersionedSoftDeletable>(this DbModelBuilder modelBuilder) where TVersionedSoftDeletable : IVersionedSoftDeletable {
+			modelBuilder.Filter(versionedSoftDeletableFilterName + typeof(TVersionedSoftDeletable).Name, FilterExpression<TVersionedSoftDeletable>.IsNotDeletedExpression);
 		}
+
+		public static void EnableVersionedSoftDeletableFilter<TVersionedSoftDeletable>(this DbContext dbContext) where TVersionedSoftDeletable : IVersionedSoftDeletable {
+			dbContext.EnableFilter(versionedSoftDeletableFilterName + typeof(TVersionedSoftDeletable).Name);
+		}
+
+		public static void DisableVersionedSoftDeletableFilter<TVersionedSoftDeletable>(this DbContext dbContext) where TVersionedSoftDeletable : IVersionedSoftDeletable {
+			dbContext.DisableFilter(versionedSoftDeletableFilterName + typeof(TVersionedSoftDeletable).Name);
+		}
+		#endregion
+		#region IVersionedUserSoftDeletable
+		private const String versionedUserSoftDeletableFilterName = "VersionedUserSoftDeletable";
+
+		public static void AddVersionedUserSoftDeletableFilter(this DbModelBuilder modelBuilder) {
+			modelBuilder.Filter(versionedUserSoftDeletableFilterName, FilterExpression<IVersionedUserSoftDeletable<String, UserDeleted>, String, UserDeleted>.IsNotDeletedExpression);
+		}
+
+		public static void EnableVersionedUserSoftDeletableFilter(this DbContext dbContext) {
+			dbContext.EnableFilter(versionedUserSoftDeletableFilterName);
+		}
+
+		public static void DisableVersionedUserSoftDeletableFilter(this DbContext dbContext) {
+			dbContext.DisableFilter(versionedUserSoftDeletableFilterName);
+		}
+		#endregion
 	}
 }

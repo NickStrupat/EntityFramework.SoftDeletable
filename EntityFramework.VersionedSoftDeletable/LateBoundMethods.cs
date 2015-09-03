@@ -10,7 +10,7 @@ namespace EntityFramework.VersionedSoftDeletable {
 
 		private static Func<TIVersionedUserSoftDeletable, Boolean> GetIsDeletedFunc() {
 			var a = typeof(LateBoundMethods<TIVersionedUserSoftDeletable>).GetMethod(nameof(isDeleted), BindingFlags.NonPublic | BindingFlags.Static);
-			var types = new VersionedUserSoftDeletableInnerTypes();
+			var types = new VersionedUserSoftDeletableInnerTypes<TIVersionedUserSoftDeletable>();
 			var b = a.MakeGenericMethod(types.UserIdType, types.VersionedUserDeletedType, types.UserDeletedType, types.UserDeletedVersionType, types.UserDeletedsInterfaceType);
 			var parameter = Expression.Parameter(typeof(IVersionedUserSoftDeletable<,>).MakeGenericType(types.UserIdType, types.VersionedUserDeletedType));
 			return Expression.Lambda<Func<TIVersionedUserSoftDeletable, Boolean>>(Expression.Call(b, parameter), parameter).Compile();
@@ -27,7 +27,7 @@ namespace EntityFramework.VersionedSoftDeletable {
 
 		private static Action<TIVersionedUserSoftDeletable, Boolean> GetSetDeletedAction() {
 			var a = typeof(LateBoundMethods<TIVersionedUserSoftDeletable>).GetMethod(nameof(setDeleted), BindingFlags.NonPublic | BindingFlags.Static);
-			var types = new VersionedUserSoftDeletableInnerTypes();
+			var types = new VersionedUserSoftDeletableInnerTypes<TIVersionedUserSoftDeletable>();
 			var b = a.MakeGenericMethod(types.UserIdType, types.VersionedUserDeletedType, types.UserDeletedType, types.UserDeletedVersionType, types.UserDeletedsInterfaceType);
 			var parameter = Expression.Parameter(typeof(IVersionedUserSoftDeletable<,>).MakeGenericType(types.UserIdType, types.VersionedUserDeletedType));
 			var parameter2 = Expression.Parameter(typeof(Boolean));
@@ -39,36 +39,6 @@ namespace EntityFramework.VersionedSoftDeletable {
 			where TUserDeleted : UserDeleted<TUserId>
 			where TUserDeletedVersion : VersionBase<TUserDeleted>, new() {
 			versionedUserSoftDeletable.Deleted.Value = UserDeletedFactories<TUserDeleted, TUserId>.Create(versionedUserSoftDeletable.GetCurrentUserId(), newDeletedState);
-		}
-
-		private class VersionedUserSoftDeletableInnerTypes {
-			public VersionedUserSoftDeletableInnerTypes() {
-				var genericArgs = typeof(TIVersionedUserSoftDeletable).GenericTypeArguments;
-				UserIdType = genericArgs[0];
-				VersionedUserDeletedType = genericArgs[1];
-				var versionedGenericArgs = VersionedUserDeletedType.BaseType.GenericTypeArguments;
-				UserDeletedType = versionedGenericArgs[0];
-				UserDeletedVersionType = versionedGenericArgs[1];
-				UserDeletedsInterfaceType = versionedGenericArgs[2];
-
-				var versionedBaseType = typeof (VersionedBase<,,>).MakeGenericType(UserDeletedType, UserDeletedVersionType, UserDeletedsInterfaceType);
-                if (!versionedBaseType.IsAssignableFrom(VersionedUserDeletedType))
-					throw new InvalidOperationException();
-
-				var userDeletedBaseType = typeof (UserDeleted<>).MakeGenericType(UserIdType);
-				if (!userDeletedBaseType.IsAssignableFrom(UserDeletedType))
-					throw new InvalidOperationException();
-
-				var versionBaseType = typeof (VersionBase<>).MakeGenericType(UserDeletedType);
-				if (!versionBaseType.IsAssignableFrom(UserDeletedVersionType))
-					throw new InvalidOperationException();
-			}
-
-			public Type UserIdType { get; }
-			public Type VersionedUserDeletedType { get; }
-			public Type UserDeletedType { get; }
-			public Type UserDeletedVersionType { get; }
-			public Type UserDeletedsInterfaceType { get; }
 		}
 
 		private static class UserDeletedFactories<TUserDeleted, TUserId> where TUserDeleted : UserDeleted<TUserId> {

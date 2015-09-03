@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure.Interception;
-using EntityFramework.Filters;
+using EntityFramework.DynamicFilters;
 using EntityFramework.Triggers;
 
 namespace EntityFramework.SoftDeletable.Testing {
@@ -29,8 +28,7 @@ namespace EntityFramework.SoftDeletable.Testing {
 			}
 
 			protected override void OnModelCreating(DbModelBuilder modelBuilder) {
-				DbInterception.Add(new FilterInterceptor());
-				modelBuilder.Conventions.AddSoftDeletableFilter();
+				modelBuilder.AddSoftDeletableFilter();
 				base.OnModelCreating(modelBuilder);
 			}
 		}
