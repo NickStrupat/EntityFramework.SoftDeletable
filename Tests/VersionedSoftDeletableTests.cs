@@ -50,5 +50,25 @@ namespace Tests {
 				Assert.IsFalse(ned.Deleted.LocalVersions.Single().Value);
 			}
 		}
+
+		[TestMethod]
+		public void GeneralFilter() {
+			using (var context = new Context()) {
+				var nick = new VPerson { Name = "Nick" };
+				context.VPeople.Add(nick);
+				nick.SoftDelete();
+				context.SaveChanges();
+				var a = context.VPeople.SingleOrDefault(x => x.Id == nick.Id);
+				Assert.IsNull(a);
+
+				context.DisableVersionedSoftDeletableFilter();
+				var b = context.VPeople.SingleOrDefault(x => x.Id == nick.Id);
+				Assert.IsNotNull(b);
+
+				context.EnableVersionedSoftDeletableFilter();
+				var c = context.VPeople.SingleOrDefault(x => x.Id == nick.Id);
+				Assert.IsNull(c);
+			}
+		}
 	}
 }

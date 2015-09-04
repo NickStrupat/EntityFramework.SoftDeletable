@@ -25,6 +25,9 @@ namespace Tests {
 			modelBuilder.AddSoftDeletableFilter();
 			modelBuilder.AddSoftDeletableFilter<Zombie>();
 			modelBuilder.AddSoftDeletableFilter<SpecialZombie>();
+
+			modelBuilder.AddVersionedSoftDeletableFilter();
+
 			base.OnModelCreating(modelBuilder);
 		}
 

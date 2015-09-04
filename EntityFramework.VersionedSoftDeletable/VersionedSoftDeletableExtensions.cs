@@ -6,7 +6,6 @@ namespace EntityFramework.VersionedSoftDeletable {
 	public static class VersionedSoftDeletableExtensions {
 		public static void InitializeVersionedSoftDeletable(this IVersionedSoftDeletable versionedSoftDeletable) {
 			versionedSoftDeletable.InitializeVersionedProperties();
-			versionedSoftDeletable.Restore();
 			versionedSoftDeletable.Triggers().Deleting += e => {
 				e.Entity.SoftDelete();
 				e.Cancel();
