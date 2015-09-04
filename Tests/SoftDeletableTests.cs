@@ -52,7 +52,7 @@ namespace Tests {
 		}
 
 		[TestMethod]
-		public void Filter() {
+		public void GeneralFilter() {
 			using (var context = new Context()) {
 				var nick = new Person { Name = "Nick" };
 				context.People.Add(nick);
@@ -68,6 +68,45 @@ namespace Tests {
 				context.EnableSoftDeletableFilter();
 				var c = context.People.SingleOrDefault(x => x.Id == nick.Id);
 				Assert.IsNull(c);
+			}
+		}
+
+		[TestMethod]
+		public void ZombieFilter() {
+			using (var context = new Context()) {
+				var nick = new Person { Name = "Nick" };
+				context.People.Add(nick);
+				nick.SoftDelete();
+
+				var zack = new Zombie { Name = "Zack" };
+				context.Zombies.Add(zack);
+				zack.SoftDelete();
+
+				context.SaveChanges();
+
+				context.DisableSoftDeletableFilter<Zombie>();
+				var a = context.People.SingleOrDefault(x => x.Id == nick.Id);
+				Assert.IsNull(a);
+				var w = context.Zombies.SingleOrDefault(x => x.Id == zack.Id);
+				Assert.IsNull(w);
+
+				context.DisableSoftDeletableFilter();
+				var b = context.People.SingleOrDefault(x => x.Id == nick.Id);
+				Assert.IsNotNull(b);
+				var y = context.Zombies.SingleOrDefault(x => x.Id == zack.Id);
+				Assert.IsNotNull(y);
+
+				context.EnableSoftDeletableFilter<Zombie>();
+				var b2 = context.People.SingleOrDefault(x => x.Id == nick.Id);
+				Assert.IsNotNull(b2);
+				var y2 = context.Zombies.SingleOrDefault(x => x.Id == zack.Id);
+				Assert.IsNull(y2);
+
+				context.EnableSoftDeletableFilter();
+				var c = context.People.SingleOrDefault(x => x.Id == nick.Id);
+				Assert.IsNull(c);
+				var z = context.Zombies.SingleOrDefault(x => x.Id == zack.Id);
+				Assert.IsNull(z);
 			}
 		}
 	}

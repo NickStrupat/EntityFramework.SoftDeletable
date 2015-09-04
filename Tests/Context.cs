@@ -1,32 +1,30 @@
 using System;
 using System.Data.Entity;
-using System.Data.Entity.Migrations;
 using EntityFramework.SoftDeletable;
 using EntityFramework.Triggers;
 using EntityFramework.VersionedProperties;
 using EntityFramework.VersionedSoftDeletable;
 
 namespace Tests {
-	public class MigrationsConfiguration : DbMigrationsConfiguration<Context> {
-		public MigrationsConfiguration() {
-			AutomaticMigrationsEnabled = true;
-			AutomaticMigrationDataLossAllowed = true;
-		}
-	}
-
 	public class Context : DbContextWithTriggers, IBooleanVersions, IUserDeleteds {
 		public DbSet<Person> People { get; set; }
 		public DbSet<SpecialPerson> SpecialPeople { get; set; }
 		public DbSet<VPerson> VPeople { get; set; }
-		public DbSet<VuPerson> VuPeople { get; set; }
+		public DbSet<VSpecialPerson> VSpecialPeople { get; set; }
 
-		public Context() {
-			this.EnableSoftDeletableFilter();
-			
+		public DbSet<Zombie> Zombies { get; set; }
+		public DbSet<SpecialZombie> SpecialZombies { get; set; }
+		public DbSet<VZombie> VZombies { get; set; }
+		public DbSet<VSpecialZombie> VSpecialZombies { get; set; }
+
+		static Context() {
+			Database.SetInitializer(new DropCreateDatabaseAlways<Context>());
 		}
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder) {
 			modelBuilder.AddSoftDeletableFilter();
+			modelBuilder.AddSoftDeletableFilter<Zombie>();
+			modelBuilder.AddSoftDeletableFilter<SpecialZombie>();
 			base.OnModelCreating(modelBuilder);
 		}
 
@@ -43,7 +41,13 @@ namespace Tests {
 		public Int64 Id { get; private set; }
 		public String Name { get; set; }
 
-		public Func<Int64> CurrentUserIdFunc { get; set; }
+		protected SpecialPerson() { }
+		public SpecialPerson(String name, Func<Int64> currentUserIdFunc) {
+			Name = name;
+			CurrentUserIdFunc = currentUserIdFunc;
+		}
+
+		public Func<Int64> CurrentUserIdFunc { get; }
 		public override Int64 GetCurrentUserId() => CurrentUserIdFunc();
 	}
 
@@ -52,11 +56,55 @@ namespace Tests {
 		public String Name { get; set; }
 	}
 
-	public class VuPerson : VersionedUserSoftDeletable {
+	public class VSpecialPerson : VersionedUserSoftDeletable {
+		protected VSpecialPerson() { }
+		public VSpecialPerson(String name, Func<String> currentUserIdFunc) {
+			Name = name;
+			CurrentUserIdFunc = currentUserIdFunc;
+		}
+
 		public Int64 Id { get; private set; }
 		public String Name { get; set; }
 
-		public Func<String> CurrentUserIdFunc { get; set; }
+		public Func<String> CurrentUserIdFunc { get; }
+		public override String GetCurrentUserId() => CurrentUserIdFunc();
+	}
+
+	public class Zombie : SoftDeletable {
+		public Int64 Id { get; private set; }
+		public String Name { get; set; }
+	}
+
+	public class SpecialZombie : UserSoftDeletable<Int64> {
+		public Int64 Id { get; private set; }
+		public String Name { get; set; }
+
+		protected SpecialZombie() { }
+		public SpecialZombie(String name, Func<Int64> currentUserIdFunc) {
+			Name = name;
+			CurrentUserIdFunc = currentUserIdFunc;
+		}
+
+		public Func<Int64> CurrentUserIdFunc { get; }
+		public override Int64 GetCurrentUserId() => CurrentUserIdFunc();
+	}
+
+	public class VZombie : VersionedSoftDeletable {
+		public Int64 Id { get; private set; }
+		public String Name { get; set; }
+	}
+
+	public class VSpecialZombie : VersionedUserSoftDeletable {
+		protected VSpecialZombie() { }
+		public VSpecialZombie(String name, Func<String> currentUserIdFunc) {
+			Name = name;
+			CurrentUserIdFunc = currentUserIdFunc;
+		}
+
+		public Int64 Id { get; private set; }
+		public String Name { get; set; }
+
+		public Func<String> CurrentUserIdFunc { get; }
 		public override String GetCurrentUserId() => CurrentUserIdFunc();
 	}
 }

@@ -11,8 +11,8 @@ namespace Tests {
 				var userIdGetterCount = 0;
 				Func<String> getUserIdFunc = () => (++userIdGetterCount).ToString();
 
-				var nick = new VuPerson { Name = "Nick", CurrentUserIdFunc = getUserIdFunc };
-				context.VuPeople.Add(nick);
+				var nick = new VSpecialPerson("Nick", getUserIdFunc);
+				context.VSpecialPeople.Add(nick);
 				Assert.IsFalse(nick.Deleted.Value.IsDeleted);
 				Assert.IsFalse(nick.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 0);
@@ -40,8 +40,8 @@ namespace Tests {
 				var userIdGetterCount = 0;
 				Func<String> getUserIdFunc = () => (++userIdGetterCount).ToString();
 
-				var ned = new VuPerson { Name = "Ned", CurrentUserIdFunc = getUserIdFunc };
-				context.VuPeople.Add(ned);
+				var ned = new VSpecialPerson("Ned", getUserIdFunc);
+				context.VSpecialPeople.Add(ned);
 				Assert.IsFalse(ned.Deleted.Value.IsDeleted);
 				Assert.IsFalse(ned.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 0);
@@ -51,7 +51,7 @@ namespace Tests {
 				Assert.IsFalse(ned.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 0);
 
-				context.VuPeople.Remove(ned);
+				context.VSpecialPeople.Remove(ned);
 				Assert.IsFalse(ned.Deleted.Value.IsDeleted);
 				Assert.IsFalse(ned.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 0);
