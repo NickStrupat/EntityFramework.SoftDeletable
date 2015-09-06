@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using EntityFramework.VersionedProperties;
 
 namespace EntityFramework.VersionedSoftDeletable {
