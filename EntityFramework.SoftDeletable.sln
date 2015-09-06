@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.SoftDeletab
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{08D8D6EC-21AD-479C-9140-41E069683D52}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.IdentitySoftDeletable", "EntityFramework.IdentitySoftDeletable\EntityFramework.IdentitySoftDeletable.csproj", "{B1961E53-BC05-4DA4-B7A9-FEF0CEF01D19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFramework.VersionedIdentitySoftDeletable", "EntityFramework.VersionedIdentitySoftDeletable\EntityFramework.VersionedIdentitySoftDeletable.csproj", "{55FA545A-3592-4287-BF9B-55FC59813D17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{08D8D6EC-21AD-479C-9140-41E069683D52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08D8D6EC-21AD-479C-9140-41E069683D52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08D8D6EC-21AD-479C-9140-41E069683D52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1961E53-BC05-4DA4-B7A9-FEF0CEF01D19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1961E53-BC05-4DA4-B7A9-FEF0CEF01D19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1961E53-BC05-4DA4-B7A9-FEF0CEF01D19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1961E53-BC05-4DA4-B7A9-FEF0CEF01D19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55FA545A-3592-4287-BF9B-55FC59813D17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55FA545A-3592-4287-BF9B-55FC59813D17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55FA545A-3592-4287-BF9B-55FC59813D17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55FA545A-3592-4287-BF9B-55FC59813D17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
