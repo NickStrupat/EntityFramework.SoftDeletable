@@ -16,11 +16,11 @@ namespace Tests {
 				nick.SoftDelete();
 				Assert.IsTrue(nick.Deleted.Value);
 				Assert.IsTrue(nick.IsDeleted());
-				Assert.IsFalse(nick.Deleted.LocalVersions.Single().Value);
 
 				nick.Restore();
 				Assert.IsFalse(nick.Deleted.Value);
 				Assert.IsFalse(nick.IsDeleted());
+				Assert.IsTrue(nick.Deleted.LocalVersions.Single().Value);
 
 				context.SaveChanges();
 				Assert.IsFalse(nick.Deleted.Value);

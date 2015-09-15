@@ -43,25 +43,8 @@ namespace EntityFramework.SoftDeletable {
 			);
 		}
 
-		private static DateTime? GetOriginalDeletedValue(this IBeforeEntry<ISoftDeletable> entry) {
-			return (DateTime?)entry.Context.Entry(entry.Entity).OriginalValues[nameof(ISoftDeletable.Deleted)];
-		}
-
 		private static void SetDeletedChangedById<TUserSoftDeletable, TUserId>(this TUserSoftDeletable userSoftDeletable) where TUserSoftDeletable : class, IUserSoftDeletable<TUserId> {
 			SetterCache<TUserSoftDeletable, TUserId>.DeletedChangedByIdPropertySetter(userSoftDeletable, userSoftDeletable.GetCurrentUserId());
-		}
-
-		public static void InitializeSoftDeletable<TSoftDeletable>(this TSoftDeletable softDeletable) where TSoftDeletable : class, ISoftDeletable {
-			if (softDeletable == null)
-				throw new ArgumentNullException(nameof(softDeletable));
-			softDeletable.Triggers().Deleting += e => {
-				e.Entity.SoftDelete();
-				e.Cancel();
-			};
-			softDeletable.Triggers().Updating += e => {
-				if (e.Entity.IsDeleted() && e.GetOriginalDeletedValue() != null)
-					throw new SoftDeletableModifiedWhileDeletedException();
-			};
 		}
 
 		public static Boolean IsDeleted(this ISoftDeletable softDeletable) {
@@ -70,23 +53,23 @@ namespace EntityFramework.SoftDeletable {
 			return softDeletable.Deleted != null;
 		}
 
-		public static void SoftDelete<TSoftDeletable>(this TSoftDeletable softDeletable) where TSoftDeletable : class, ISoftDeletable {
+		public static void SoftDelete(this ISoftDeletable softDeletable) {
 			if (softDeletable == null)
 				throw new ArgumentNullException(nameof(softDeletable));
-			softDeletable.SetSoftDeletable(true);
+			if (!softDeletable.IsDeleted())
+				softDeletable.SetSoftDeletable(markAsDeleted: true);
 		}
 
-		public static void Restore<TSoftDeletable>(this TSoftDeletable softDeletable) where TSoftDeletable : class, ISoftDeletable {
+		public static void Restore(this ISoftDeletable softDeletable) {
 			if (softDeletable == null)
 				throw new ArgumentNullException(nameof(softDeletable));
-			softDeletable.SetSoftDeletable(false);
+			if (softDeletable.IsDeleted())
+				softDeletable.SetSoftDeletable(markAsDeleted: false);
 		}
 
-		private static void SetSoftDeletable<TSoftDeletable>(this TSoftDeletable softDeletable, Boolean newDeletedState) where TSoftDeletable : class, ISoftDeletable {
-			if (newDeletedState && softDeletable.IsDeleted())
-				throw new SoftDeletableModifiedWhileDeletedException();
+		private static void SetSoftDeletable(this ISoftDeletable softDeletable, Boolean markAsDeleted) {
 			var setters = softDeletable.GetSetters();
-			setters.DeletedPropertySetter(softDeletable, newDeletedState ? DateTime.UtcNow : (DateTime?)null);
+			setters.DeletedPropertySetter(softDeletable, markAsDeleted ? DateTime.UtcNow : (DateTime?)null);
 			setters.DeletedChangedByIdPropertySetter?.Invoke(softDeletable);
 		}
 	}

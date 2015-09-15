@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+
 using EntityFramework.VersionedSoftDeletable;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -26,6 +28,7 @@ namespace Tests {
 				Assert.IsFalse(nick.Deleted.Value.IsDeleted);
 				Assert.IsFalse(nick.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 2);
+				Assert.IsTrue(nick.Deleted.LocalVersions.Single().Value.IsDeleted);
 
 				context.SaveChanges();
 				Assert.IsFalse(nick.Deleted.Value.IsDeleted);
@@ -60,6 +63,7 @@ namespace Tests {
 				Assert.IsTrue(ned.Deleted.Value.IsDeleted);
 				Assert.IsTrue(ned.IsDeleted());
 				Assert.IsTrue(userIdGetterCount == 1);
+				Assert.IsFalse(ned.Deleted.LocalVersions.Single().Value.IsDeleted);
 
 				ned.Restore();
 				context.SaveChanges();
